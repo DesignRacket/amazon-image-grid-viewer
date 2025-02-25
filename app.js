@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoading();
 
         try {
-            // Call our serverless function to fetch Amazon results
+            // In production, use the real API endpoint
+            // For development/demo purposes, we'll use mock data
             const response = await fetchAmazonResults(searchTerm);
             displayResults(response);
         } catch (error) {
@@ -43,11 +44,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to fetch Amazon results
     async function fetchAmazonResults(searchTerm) {
         try {
-            // In a real implementation, this would be your backend API endpoint
-            // Since we don't have a real backend, we'll return mock data for demonstration
+            // Check if we're in a production environment
+            const isProduction = window.location.hostname !== 'localhost' && 
+                                window.location.hostname !== '127.0.0.1';
             
-            // Simulate API call with mock data
-            return await getMockResults(searchTerm);
+            if (isProduction) {
+                // Call the serverless function
+                const apiUrl = `/api/search-amazon?q=${encodeURIComponent(searchTerm)}`;
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to fetch results');
+                }
+                
+                return await response.json();
+            } else {
+                // In development or demo, use mock data
+                return await getMockResults(searchTerm);
+            }
         } catch (error) {
             console.error('Error fetching results:', error);
             throw new Error('Failed to fetch Amazon results');
@@ -55,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to get mock results for demonstration purposes
-    // In a real app, this would be replaced with actual Amazon scraping
     async function getMockResults(searchTerm) {
         return new Promise((resolve) => {
             // Simulate network delay
@@ -101,6 +115,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             productElement.appendChild(imageElement);
             productElement.appendChild(titleElement);
+            
+            // Optional: Make the product clickable to go to Amazon
+            if (product.url && product.url !== '#') {
+                productElement.style.cursor = 'pointer';
+                productElement.addEventListener('click', () => {
+                    window.open(product.url, '_blank');
+                });
+            }
             
             imageGrid.appendChild(productElement);
         });
