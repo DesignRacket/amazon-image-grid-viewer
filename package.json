@@ -1,0 +1,25 @@
+{
+  "name": "amazon-image-grid-viewer",
+  "version": "1.0.0",
+  "description": "A web app to search Amazon products and display their images in a grid",
+  "main": "index.js",
+  "scripts": {
+    "start": "vercel dev",
+    "deploy": "vercel deploy --prod"
+  },
+  "keywords": [
+    "amazon",
+    "search",
+    "images",
+    "grid",
+    "web-scraping"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  }
+}
